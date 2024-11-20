@@ -87,6 +87,9 @@ class Parser:
 
             current_date += timedelta(days = 1)
 
+        self.sql_service.close_connection()
+    
+
 
 class SqlService:
     def __init__(self, db_path : str) -> None:
