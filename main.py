@@ -87,23 +87,20 @@ class Parser:
 
             current_date += timedelta(days = 1)
 
-        self.sql_service.close_connection()
-    
-
 
 class SqlService:
     def __init__(self, db_path : str) -> None:
         self.db_path = db_path
+    
+    def upload_exporting_data(self, data : list) -> None:
         Logger.log(f"Подключение к базе данных {self.db_path}...")
         try:
-            self.connection = sqlite3.connect(self.db_path)
+            connection = sqlite3.connect(self.db_path)
         
         except:
             Logger.error("Некорректный ввод пути до базы данных")
             raise Exception("Некорректный ввод пути до базы данных")
-    
-    def upload_exporting_data(self, data : list) -> None:
-        cursor = self.connection.cursor()
+        cursor = connection.cursor()
 
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS NewsData (
@@ -130,12 +127,11 @@ class SqlService:
 
         cursor.executemany("INSERT or IGNORE INTO NewsData(date, text) VALUES(:date, :text)", to_upload_textes)
 
-        self.connection.commit()
+        connection.commit()
 
         Logger.log(f"Данные выгружены успешно! (Всего выгружено: {len(to_upload_textes)} элементов)\n")
-    
-    def close_connection(self) -> None:
-        self.connection.close()
+
+        connection.close()
 
 if __name__ == "__main__":
     parser = Parser()
