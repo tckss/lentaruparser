@@ -31,7 +31,7 @@ class Parser:
 
         self.sql_service = SqlService("news_data.sqlite")
     
-    def get_request(self, url : str) -> dict:
+    def get_request(self, url : str) -> str:
         self.session.headers.update(user_agent.generate_navigator())
         Logger.inform(f"(GET) {url}")
         return self.session.get(url).text
